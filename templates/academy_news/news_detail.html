@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <ol class="breadcrumb">
+          <li><a href="{% url 'main:main' %}">Головна</a></li>
+          <li><a href="{% url 'news:news' %}">Новини</a></li>
+          <li class="active">{{ object.title }}</li>
+        </ol>
+        {{ object.content|safe }}
+    </div>
+{% endblock content %}

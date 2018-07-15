@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <div class="container">
+    {% for news in news %}
+        <h4>{{ news.title }}</h4>
+        {{ news.content|safe }}
+        <p><a href="{{ news.get_absolute_url }}">Читати далі...</a></p>
+    {% empty %}
+        <p>Новин немає.</p>
+    {% endfor %}
+    </div>
+{% endblock content %}
+{% block pagination %}
+    {% if is_paginated %}
+        {% with object_list=news %}
+        <div class="paginator">
+            {% include "pagination.html" %}
+        </div>
+        {% endwith %}
+    {% endif %}
+{% endblock pagination %}

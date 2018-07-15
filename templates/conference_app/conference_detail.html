@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <div class="container">
+    <ol class="breadcrumb">
+          <li><a href="{% url 'main:main' %}">Головна</a></li>
+          <li><a href="{% url 'conference:conference_list' %}">Конференції</a></li>
+          <li class="active">{{ object.title }}</li>
+    </ol>
+        {{ object.title }}
+        {% for th in object.thesis_set.all %}
+            <p>{{ th.title }}</p>
+            <p>{{ th.get_authors }}</p>
+            <a href="{{ th.thesis.url }}">Завантажити</a>
+        {% endfor %}
+    </div>
+{% endblock content %}

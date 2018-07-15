@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+    <div class="container">
+        {% for conference in conferences %}
+            <div class="col-xs-12">
+                <div class="conference_short">
+                    <h4>"{{ conference.title }}"</h4>
+                    <p>{{ conference.level|upper }}</p>
+                    <p>Місце проведення: {{ conference.place }}</p>
+                    <p><b>Дата проведення:</b> {{ conference.date }}</p>
+                    <p><a href="{{ conference.get_absolute_url }}">Детальніше...</a></p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock content %}
+{% block pagination %}
+
+{% endblock pagination %}

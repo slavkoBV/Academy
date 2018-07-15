@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+	- Контакти
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+	<div class="static_page">
+		<h3>Контакти</h3>
+		<p>Ви можете зв'язатися з нами за телефоном або електронною адресою.<br>
+		Дзвоніть або пишіть, Вам завжди раді!</p>
+        {% for contact in contacts %}
+            <address>Адреса: {{ contact.address }}</address>
+            {% for phone in contact.phones.all %}
+                <p><img src="{{ phone.provider.url }}" height="30" width="30">
+                    {{ phone.number }}
+                </p>
+            {% endfor %}
+            {% for email in contact.emails.all %}
+                <p>e-mail: {{ email }}</p>
+            {% endfor %}
+		{% endfor %}
+	</div>
+</div>
+
+{% endblock content %}
