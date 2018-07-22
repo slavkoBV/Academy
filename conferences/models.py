@@ -148,6 +148,7 @@ class ParticipantProfile(models.Model):
     class Meta:
         verbose_name_plural = 'Профілі учасників'
         verbose_name = 'Профіль учасника'
+        unique_together = ('lastname', 'firstname', 'middlename')
 
     def __str__(self):
         return self.lastname + ' ' + self.firstname
