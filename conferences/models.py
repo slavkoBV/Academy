@@ -81,7 +81,7 @@ class Conference(models.Model):
 
 
 # Participant Model ###########################################
-class ParticipantProfile(models.Model):
+class UserProfile(models.Model):
     academic_status_CHOICES = (
         ('Доц.', 'Доцент'),
         ('Проф.', 'Професор'),
@@ -136,10 +136,6 @@ class ParticipantProfile(models.Model):
         max_length=50,
         verbose_name='Місто'
     )
-    address = models.CharField(
-        max_length=100,
-        verbose_name='Адреса'
-    )
     phone = models.CharField(
         max_length=13,
         verbose_name='Телефон'
@@ -174,7 +170,7 @@ class ParticipantProfile(models.Model):
 
 
 class Participant(models.Model):
-    participant_profile = models.ForeignKey(ParticipantProfile, verbose_name='Профіль учасника')
+    user = models.ForeignKey(UserProfile, verbose_name='Профіль учасника')
     conference = models.ForeignKey(Conference, verbose_name='Конференція')
     section = models.CharField(
         max_length=35,
@@ -182,14 +178,15 @@ class Participant(models.Model):
         choices=section_CHOICES,
         verbose_name='Назва секції'
     )
+
     def __str__(self):
-        return str(self.participant_profile)
+        return str(self.user)
 
     class Meta:
-        ordering = ('participant_profile',)
+        ordering = ('user',)
         verbose_name = 'Учасник'
         verbose_name_plural = 'Учасники'
-        unique_together = (('conference', 'participant_profile'),)
+        unique_together = (('conference', 'user'),)
 
 
 # Thesis Model ############################################
@@ -215,7 +212,7 @@ class Thesis(models.Model):
     def get_authors(self):
         authors_list = self.author_set.get_queryset()
         return ', '.join(
-            [author.participant.participant_profile.lastname + ' ' + author.participant.participant_profile.firstname
+            [author.participant.user.lastname + ' ' + author.participant.user.firstname
              for author in authors_list])
 
     get_authors.short_description = 'Автори'
@@ -231,13 +228,11 @@ class Thesis(models.Model):
 
 class Author(models.Model):
     participant = models.ForeignKey(Participant, verbose_name='Учасник конференції')
-    thesis = models.ForeignKey(Thesis)
-
-
+    thesis = models.ForeignKey(Thesis, verbose_name='Доповідь')
 
     class Meta:
         verbose_name = 'Автор'
         verbose_name_plural = 'Автори'
 
     def __str__(self):
-        return self.participant.participant_profile.lastname
+        return self.participant.user.lastname
