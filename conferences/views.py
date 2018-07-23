@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import DetailView
+from django.shortcuts import get_object_or_404
 from .models import Conference
 
 from utils.paginate import paginate
@@ -11,10 +11,11 @@ def conference_list(request):
     return render(request, 'conference_app/conference_list.html', context)
 
 
-class ConferenceDetailView(DetailView):
-    model = Conference
-    template_name = 'conference_app/conference_detail.html'
+def conference_detail(request, id, slug):
+    conference = get_object_or_404(Conference, pk=id)
+    thesises = conference.thesis_set.all()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+    if request.GET.get('section'):
+        thesises = thesises.filter(section=request.GET.get('section'))
+    return render(request, 'conference_app/conference_detail.html', {'conference': conference,
+                                                                     'thesises': thesises})

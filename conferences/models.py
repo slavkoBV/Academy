@@ -1,8 +1,22 @@
-from datetime import datetime
+import datetime
 from django.db import models
 from django.urls import reverse
 
 from utils.slugify import slugify
+
+section_CHOICES = (
+    ('Природничі науки', 'Природничі науки'),
+    ('Інформаційні технології', 'Інформаційні технології'),
+    ('Механічна інженерія', 'Механічна інженерія'),
+    ('Електрична інженерія', 'Електрична інженерія'),
+    ('Автоматизація та приладобудування', 'Автоматизація та приладобудування'),
+    ('Хімічна та біоінженерія', 'Хімічна та біоінженерія'),
+    ('Електроніка та телекомунікації', 'Електроніка та телекомунікації'),
+    ('Виробництво та технології', 'Виробництво та технології'),
+    ('Архітектура та будівництво', 'Архітектура та будівництво'),
+    ('Цивільна безпека', 'Цивільна безпека'),
+    ('Транспорт', 'Транспорт'),
+)
 
 
 class Conference(models.Model):
@@ -19,8 +33,13 @@ class Conference(models.Model):
         blank=False,
         verbose_name='Рівень конференції'
     )
-    date = models.DateField(
-        verbose_name='Дата конференції'
+    date_start = models.DateField(
+        verbose_name='Дата початку конференції',
+        default=datetime.date.today
+    )
+    date_end = models.DateField(
+        verbose_name='Дата завершення конференції',
+        default=datetime.date.today
     )
     place = models.CharField(
         max_length=250,
@@ -47,7 +66,7 @@ class Conference(models.Model):
     class Meta:
         verbose_name = 'Конференція'
         verbose_name_plural = 'Конференції'
-        ordering = ('-date',)
+        ordering = ('-date_start',)
 
     def save(self, *args, **kwargs):
         if self.title:
@@ -58,7 +77,7 @@ class Conference(models.Model):
         return reverse('conference:conference_detail', args=[self.id, self.slug])
 
     def __str__(self):
-        return self.title + ' ' + datetime.strftime(self.date, '%Y-%m-%d')
+        return self.title + ' ' + str(self.date_start) + ' - ' + str(self.date_end)
 
 
 # Participant Model ###########################################
@@ -157,7 +176,12 @@ class ParticipantProfile(models.Model):
 class Participant(models.Model):
     participant_profile = models.ForeignKey(ParticipantProfile, verbose_name='Профіль учасника')
     conference = models.ForeignKey(Conference, verbose_name='Конференція')
-
+    section = models.CharField(
+        max_length=35,
+        default='None',
+        choices=section_CHOICES,
+        verbose_name='Назва секції'
+    )
     def __str__(self):
         return str(self.participant_profile)
 
@@ -170,19 +194,6 @@ class Participant(models.Model):
 
 # Thesis Model ############################################
 class Thesis(models.Model):
-    section_CHOICES = (
-        ('Природничі науки', 'Природничі науки'),
-        ('Інформаційні технології', 'Інформаційні технології'),
-        ('Механічна інженерія', 'Механічна інженерія'),
-        ('Електрична інженерія', 'Електрична інженерія'),
-        ('Автоматизація та приладобудування', 'Автоматизація та приладобудування'),
-        ('Хімічна та біоінженерія', 'Хімічна та біоінженерія'),
-        ('Електроніка та телекомунікації', 'Електроніка та телекомунікації'),
-        ('Виробництво та технології', 'Виробництво та технології'),
-        ('Архітектура та будівництво', 'Архітектура та будівництво'),
-        ('Цивільна безпека', 'Цивільна безпека'),
-        ('Транспорт', 'Транспорт'),
-    )
     title = models.CharField(
         max_length=200,
         verbose_name='Назва доповіді'
@@ -221,6 +232,8 @@ class Thesis(models.Model):
 class Author(models.Model):
     participant = models.ForeignKey(Participant, verbose_name='Учасник конференції')
     thesis = models.ForeignKey(Thesis)
+
+
 
     class Meta:
         verbose_name = 'Автор'
