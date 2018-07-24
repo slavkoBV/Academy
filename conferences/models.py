@@ -26,7 +26,13 @@ class Conference(models.Model):
         blank=False,
         verbose_name='Тема конференції'
     )
-    slug = models.SlugField(blank=True)
+    title_eng = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name='Тема конференції_англ.'
+    )
+    slug = models.SlugField(blank=True, editable=False)
     level = models.CharField(
         max_length=70,
         null=False,
@@ -172,12 +178,6 @@ class UserProfile(models.Model):
 class Participant(models.Model):
     user = models.ForeignKey(UserProfile, verbose_name='Профіль учасника')
     conference = models.ForeignKey(Conference, verbose_name='Конференція')
-    section = models.CharField(
-        max_length=35,
-        default='None',
-        choices=section_CHOICES,
-        verbose_name='Назва секції'
-    )
 
     def __str__(self):
         return str(self.user)
@@ -189,15 +189,33 @@ class Participant(models.Model):
         unique_together = (('conference', 'user'),)
 
 
+class Section(models.Model):
+        title = models.CharField(
+            max_length=100,
+            choices=section_CHOICES,
+            null=False,
+            blank=False,
+            verbose_name='Назва секції'
+        )
+        participant = models.ForeignKey(Participant, verbose_name='Учасник', related_name='sections')
+
+        class Meta:
+            verbose_name = 'Секція'
+            verbose_name_plural = 'Секції'
+            unique_together = (('title', 'participant'),)
+
+        def __str__(self):
+            return self.title
+
+
 # Thesis Model ############################################
 class Thesis(models.Model):
     title = models.CharField(
         max_length=200,
         verbose_name='Назва доповіді'
     )
-    section = models.CharField(
-        max_length=35,
-        choices=section_CHOICES,
+    section = models.ForeignKey(
+        Section,
         verbose_name='Назва секції'
     )
     thesis = models.FileField(

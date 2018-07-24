@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from django.forms import ModelForm, ValidationError, BaseInlineFormSet
-from .models import Conference, UserProfile, Thesis, Author, Participant
+from .models import Conference, UserProfile, Thesis, Author, Participant, Section
 
 
 class ThesisFormAdmin(ModelForm):
@@ -10,6 +10,9 @@ class ThesisFormAdmin(ModelForm):
         for a in authors:
             if a.participant.conference.id != self.cleaned_data['conference'].id:
                 raise ValidationError('Автори повинні бути зареєстровані учасниками конференції на яку \
+                                       подається доповідь')
+            if self.cleaned_data['section'] not in a.participant.sections.all():
+                raise ValidationError('Автори повинні бути зареєстровані в секції на яку \
                                        подається доповідь')
         return self.cleaned_data
 
@@ -77,7 +80,10 @@ class AuthorForm(ModelForm):
         thesis = None
         if self.parent_object.id:
             thesis = Thesis.objects.get(id=self.parent_object.id)
-        self.fields['participant'].queryset = Participant.objects.filter(conference=thesis.conference)
+        if thesis:
+            self.fields['participant'].queryset = Participant.objects.filter(conference=thesis.conference)
+        else:
+            self.fields['participant'].queryset = Participant.objects.none()
 
 
 class AuthorInline(admin.StackedInline):
@@ -88,15 +94,23 @@ class AuthorInline(admin.StackedInline):
     form = AuthorForm
 
 
+
 @admin.register(Thesis)
 class ThesisAdmin(admin.ModelAdmin):
     list_display = ['title', 'section', 'conference', 'get_authors']
-    list_filter = ['section', 'conference__title']
+    list_filter = ['conference__title', 'section']
     form = ThesisFormAdmin
     inlines = [AuthorInline]
 
 
+class SectionInline(admin.StackedInline):
+    model = Section
+    extra = 0
+
+
 @admin.register(Participant)
 class ParticipantAdmin(admin.ModelAdmin):
-    list_display = ('user', 'conference', 'section')
-    list_filter = ('conference__title', 'section')
+    list_display = ('user', 'conference',)
+    list_filter = ('conference__title', 'sections')
+
+    inlines = [SectionInline,]
