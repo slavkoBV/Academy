@@ -182,6 +182,12 @@ class Participant(models.Model):
     def __str__(self):
         return str(self.user)
 
+    def get_sections(self):
+        sections_list = self.sections.get_queryset()
+        return ', '.join([section.title for section in sections_list])
+
+    get_sections.short_description = 'Секції'
+
     class Meta:
         ordering = ('user',)
         verbose_name = 'Учасник'
@@ -214,8 +220,11 @@ class Thesis(models.Model):
         max_length=200,
         verbose_name='Назва доповіді'
     )
-    section = models.ForeignKey(
-        Section,
+    section = models.CharField(
+        max_length=100,
+        null=False,
+        choices=section_CHOICES,
+        default=section_CHOICES[0],
         verbose_name='Назва секції'
     )
     thesis = models.FileField(

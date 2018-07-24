@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from django.forms import ModelForm, ValidationError, BaseInlineFormSet
-from .models import Conference, UserProfile, Thesis, Author, Participant, Section
+from .models import Conference, UserProfile, Thesis, Author, Participant, Section, section_CHOICES
 
 
 class ThesisFormAdmin(ModelForm):
@@ -11,7 +11,7 @@ class ThesisFormAdmin(ModelForm):
             if a.participant.conference.id != self.cleaned_data['conference'].id:
                 raise ValidationError('Автори повинні бути зареєстровані учасниками конференції на яку \
                                        подається доповідь')
-            if self.cleaned_data['section'] not in a.participant.sections.all():
+            if self.cleaned_data['section'] not in a.participant.sections.values_list()[0][1]:
                 raise ValidationError('Автори повинні бути зареєстровані в секції на яку \
                                        подається доповідь')
         return self.cleaned_data
@@ -94,7 +94,6 @@ class AuthorInline(admin.StackedInline):
     form = AuthorForm
 
 
-
 @admin.register(Thesis)
 class ThesisAdmin(admin.ModelAdmin):
     list_display = ['title', 'section', 'conference', 'get_authors']
@@ -108,9 +107,21 @@ class SectionInline(admin.StackedInline):
     extra = 0
 
 
+class ParticipantFilter(admin.SimpleListFilter):
+    title = 'Секція'
+    parameter_name = 'sections'
+
+    def lookups(self, request, model_admin):
+        return section_CHOICES
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(sections__title__contains=self.value())
+        return queryset
+
+
 @admin.register(Participant)
 class ParticipantAdmin(admin.ModelAdmin):
-    list_display = ('user', 'conference',)
-    list_filter = ('conference__title', 'sections')
-
+    list_display = ('user', 'conference', 'get_sections')
+    list_filter = ('conference__title', ParticipantFilter)
     inlines = [SectionInline,]
