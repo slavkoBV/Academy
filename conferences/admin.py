@@ -124,4 +124,4 @@ class ParticipantFilter(admin.SimpleListFilter):
 class ParticipantAdmin(admin.ModelAdmin):
     list_display = ('user', 'conference', 'get_sections')
     list_filter = ('conference__title', ParticipantFilter)
-    inlines = [SectionInline,]
+    inlines = [SectionInline, ]

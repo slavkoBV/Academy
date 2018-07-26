@@ -7,7 +7,7 @@ from utils.paginate import paginate
 
 def conference_list(request):
     conferences = Conference.objects.all()
-    context = paginate(conferences, 2, request, {'conferences': conferences}, var_name='conferences' )
+    context = paginate(conferences, 2, request, {'conferences': conferences}, var_name='conferences')
     return render(request, 'conference_app/conference_list.html', context)
 
 
