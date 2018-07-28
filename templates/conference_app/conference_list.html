@@ -11,7 +11,7 @@
         {% for conference in conferences %}
             <div class="col-xs-12">
                 <div class="conference_short">
-                    <h4 id="conf-title">{{ conference.title }}</h4>
+                    <h4 id="conf-title">{{ conference.title }}{% if conference.title_eng %} / {{ conference.title_eng}}{% endif %}</h4>
                     <p>{{ conference.level|upper }} КОНФЕРЕНЦІЯ</p>
                     <p><strong>Місце проведення:</strong> {{ conference.place }}</p>
                     <p><strong>Дата проведення:</strong> {{ conference.date_start }} - {{ conference.date_end }}</p>

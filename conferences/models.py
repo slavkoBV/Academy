@@ -83,7 +83,7 @@ class Conference(models.Model):
         return reverse('conference:conference_detail', args=[self.id, self.slug])
 
     def __str__(self):
-        return self.title + ' ' + str(self.date_start) + ' - ' + str(self.date_end)
+        return str(self.id)+ ' ' + str(self.title)
 
 
 # Participant Model ###########################################

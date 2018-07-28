@@ -30,23 +30,16 @@ class ParticipantInline(admin.StackedInline):
     suit_classes = 'suit-tab suit-tab-participants'
 
 
-class ThesisInline(admin.StackedInline):
-    model = Thesis
-    extra = 0
-    verbose_name_plural = 'Доповіді'
-    suit_classes = 'suit-tab suit-tab-thesises'
-
-
 @admin.register(Conference)
 class ConferenceAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'level', 'date_start', 'status', 'get_number_of_participants']
+    list_display = ['__str__', 'title_eng','level', 'date_start', 'status', 'get_number_of_participants']
     list_filter = ['status', 'date_start']
-    inlines = (ParticipantInline, ThesisInline)
-    suit_form_tabs = (('general', 'Конференція'), ('participants', 'Учасники'), ('thesises', 'Доповіді'))
+    inlines = (ParticipantInline,)
+    suit_form_tabs = (('general', 'Конференція'), ('participants', 'Учасники'))
     fieldsets = [
         (None, {
             'classes': ('suit-tab', 'suit-tab-general',),
-            'fields': ['title', 'level', 'date_start', 'date_end', 'place', 'status', 'information_message']
+            'fields': ['title', 'title_eng', 'level', 'date_start', 'date_end', 'place', 'status', 'information_message']
         })
     ]
 
@@ -94,10 +87,26 @@ class AuthorInline(admin.StackedInline):
     form = AuthorForm
 
 
+class ConferenceFilter(admin.SimpleListFilter):
+    title = 'Конференція'
+    parameter_name = 'conferences'
+
+    def lookups(self, request, model_admin):
+        conf_list = []
+        for conf in Conference.objects.all():
+            conf_list.append((str(conf.id), str(conf.id) + ' '+ str(conf.title)))
+        return conf_list
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(conference__id=self.value())
+        return queryset
+
+
 @admin.register(Thesis)
 class ThesisAdmin(admin.ModelAdmin):
     list_display = ['title', 'section', 'conference', 'get_authors']
-    list_filter = ['conference__title', 'section']
+    list_filter = [ConferenceFilter, 'section']
     form = ThesisFormAdmin
     inlines = [AuthorInline]
 
@@ -107,7 +116,7 @@ class SectionInline(admin.StackedInline):
     extra = 0
 
 
-class ParticipantFilter(admin.SimpleListFilter):
+class SectionFilter(admin.SimpleListFilter):
     title = 'Секція'
     parameter_name = 'sections'
 
@@ -123,5 +132,5 @@ class ParticipantFilter(admin.SimpleListFilter):
 @admin.register(Participant)
 class ParticipantAdmin(admin.ModelAdmin):
     list_display = ('user', 'conference', 'get_sections')
-    list_filter = ('conference__title', ParticipantFilter)
-    inlines = [SectionInline, ]
+    list_filter = (ConferenceFilter, SectionFilter)
+    inlines = [SectionInline,]
