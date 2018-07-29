@@ -1,5 +1,7 @@
 import datetime
+
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 
 from utils.slugify import slugify
@@ -13,7 +15,7 @@ section_CHOICES = (
     ('Хімічна та біоінженерія', 'Хімічна та біоінженерія'),
     ('Електроніка та телекомунікації', 'Електроніка та телекомунікації'),
     ('Виробництво та технології', 'Виробництво та технології'),
-    ('Архітектура та будівництво', 'Архітектура та будівництво'),
+    ('Архітектура та будівництв о', 'Архітектура та будівництво'),
     ('Цивільна безпека', 'Цивільна безпека'),
     ('Транспорт', 'Транспорт'),
 )
@@ -60,7 +62,14 @@ class Conference(models.Model):
     information_message = models.FileField(
         upload_to='inform_messages/%Y/%m/%d',
         blank=True,
+        null=True,
         verbose_name='Інформаційне повідомлення'
+    )
+    thesis_file = models.FileField(
+        upload_to='thesises/%Y-%m-%d',
+        blank=True,
+        null=True,
+        verbose_name='Збірка доповідей'
     )
 
     def get_number_of_participants(self):
@@ -68,6 +77,10 @@ class Conference(models.Model):
         return ''.join(str(len(participants)))
 
     get_number_of_participants.short_description = 'Кількість учасників'
+
+    def get_number_of_thesises(self):
+        thesises = self.thesis_set.all()
+        return ''.join(str(len(thesises)))
 
     class Meta:
         verbose_name = 'Конференція'
@@ -82,8 +95,15 @@ class Conference(models.Model):
     def get_absolute_url(self):
         return reverse('conference:conference_detail', args=[self.id, self.slug])
 
+    def _get_number_of_conference(self):
+        try:
+            conferences = sorted(list(Conference.objects.all()), key=lambda x: x.date_start)
+            return conferences.index(self) + 1
+        except ValueError:
+            return None
+
     def __str__(self):
-        return str(self.id)+ ' ' + str(self.title)
+        return str(self._get_number_of_conference()) + ' ' + str(self.title)
 
 
 # Participant Model ###########################################
@@ -108,6 +128,7 @@ class UserProfile(models.Model):
     )
     middlename = models.CharField(
         max_length=30,
+        default='--',
         verbose_name='По-батькові'
     )
     academic_status = models.CharField(
@@ -124,7 +145,7 @@ class UserProfile(models.Model):
         default=None,
         null=True,
         blank=True,
-        verbose_name='Вчений ступінь'
+        verbose_name='Науковий ступінь'
     )
     job_position = models.CharField(
         max_length=70,
@@ -156,13 +177,13 @@ class UserProfile(models.Model):
 
     def conferences(self):
         conferences = [participant.conference for participant in self.participant_set.all()]
-        return ', '.join(conference.title for conference in conferences)
+        return ', '.join(conference.__str__() for conference in conferences)
 
     conferences.short_description = 'Конференції'
 
     def get_number_of_conferences(self):
         conferences = [participant.conference for participant in self.participant_set.all()]
-        return ''.join(str(len(conferences)))
+        return str(len(conferences))
 
     get_number_of_conferences.short_description = 'Кількість конференцій'
 
@@ -196,22 +217,22 @@ class Participant(models.Model):
 
 
 class Section(models.Model):
-        title = models.CharField(
-            max_length=100,
-            choices=section_CHOICES,
-            null=False,
-            blank=False,
-            verbose_name='Назва секції'
-        )
-        participant = models.ForeignKey(Participant, verbose_name='Учасник', related_name='sections')
+    title = models.CharField(
+        max_length=100,
+        choices=section_CHOICES,
+        null=False,
+        blank=False,
+        verbose_name='Назва секції'
+    )
+    participant = models.ForeignKey(Participant, verbose_name='Учасник', related_name='sections')
 
-        class Meta:
-            verbose_name = 'Секція'
-            verbose_name_plural = 'Секції'
-            unique_together = (('title', 'participant'),)
+    class Meta:
+        verbose_name = 'Секція'
+        verbose_name_plural = 'Секції'
+        unique_together = (('title', 'participant'),)
 
-        def __str__(self):
-            return self.title
+    def __str__(self):
+        return self.title
 
 
 # Thesis Model ############################################
@@ -222,9 +243,9 @@ class Thesis(models.Model):
     )
     section = models.CharField(
         max_length=100,
+        blank=False,
         null=False,
         choices=section_CHOICES,
-        default=section_CHOICES[0],
         verbose_name='Назва секції'
     )
     thesis = models.FileField(
@@ -260,6 +281,15 @@ class Author(models.Model):
     class Meta:
         verbose_name = 'Автор'
         verbose_name_plural = 'Автори'
+
+    def clean(self, *args, **kwargs):
+        """Validate author by sections: if participant didn't register to thesis.section
+            he can't be an author of this thesis
+        """
+        if self.thesis.section not in [section.title for section in self.participant.sections.all()]:
+            raise ValidationError('Автори повинні бути зареєстровані в секції на яку \
+                                   подається доповідь')
+        super(Author, self).clean()
 
     def __str__(self):
         return self.participant.user.lastname

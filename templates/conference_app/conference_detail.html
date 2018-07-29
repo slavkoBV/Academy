@@ -2,24 +2,30 @@
 
 {% load static %}
 
+{% block extra_css %}
+        <link rel="stylesheet" href="{% static 'css/conf.css' %}">
+{% endblock extra_css %}
+
 {% block content %}
     <div class="container">
-    <ol class="breadcrumb">
-          <li><a href="{% url 'main:main' %}">Головна</a></li>
-          <li><a href="{% url 'conference:conference_list' %}">Конференції</a></li>
-          <li class="active">{{ conference.title }}</li>
-    </ol>
-        {{ conference.title }}
+        <ol class="breadcrumb">
+              <li><a href="{% url 'main:main' %}">Головна</a></li>
+              <li><a href="{% url 'conference:conference_list' %}">Конференції</a></li>
+              <li class="active">{{ conference.title }} : {{ conference.date_start|date:"d b Y"}}</li>
+        </ol>
+        <div class="conference_detail">
+            <h4 id="conf-title">{{ conference.title }} / {% if conference.title_eng %}{{ conference.title_eng }}{% endif %}</h4>
+            <h5 style="text-align: center">{{ conference.level|upper }} КОНФЕРЕНЦІЯ</h5>
+            <p><strong>Місце проведення:</strong> {{ conference.place }}</p>
+            <p><strong>Дата проведення:</strong> {{ conference.date_start }} - {{ conference.date_end }}</p>
+            <p>{% if conference.status %}Прийняло участь{% else %}Зареєстровано{% endif %}
+                <strong>{{ conference.get_number_of_participants }}</strong> учасників </p>
+            <p>{% if conference.status %}Заслухано{% else %}Зареєстровано{% endif %}
+                <strong>{{ conference.get_number_of_thesises }}</strong> доповідей </p>
+            {% if conference.thesis_file %}
+                <p><a href="{{ conference.thesis_file.url }}">Завантажити збірку доповідей</a></p>
+            {% endif %}
+        </div>
 
-        <p>Доповіді</p>
-        {% for t in thesises %}
-            <p>{{ t.title }}</p>
-            <p>{{ t.section }}</p>
-            <a href="{{ t.thesis.url }}">Завантажити</a>
-            <p>Автори</p>
-            {% for author in t.author_set.all %}
-            <p>{{ author.participant.participant_profile.lastname }} {{ author.participant.participant_profile.firstname }}</p>
-            {% endfor %}
-        {% endfor %}
     </div>
 {% endblock content %}
