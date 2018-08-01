@@ -13,19 +13,23 @@
               <li><a href="{% url 'conference:conference_list' %}">Конференції</a></li>
               <li class="active">{{ conference.title }} : {{ conference.date_start|date:"d b Y"}}</li>
         </ol>
-        <div class="conference_detail">
-            <h4 id="conf-title">{{ conference.title }} / {% if conference.title_eng %}{{ conference.title_eng }}{% endif %}</h4>
-            <h5 style="text-align: center">{{ conference.level|upper }} КОНФЕРЕНЦІЯ</h5>
-            <p><strong>Місце проведення:</strong> {{ conference.place }}</p>
-            <p><strong>Дата проведення:</strong> {{ conference.date_start }} - {{ conference.date_end }}</p>
-            <p>{% if conference.status %}Прийняло участь{% else %}Зареєстровано{% endif %}
-                <strong>{{ conference.get_number_of_participants }}</strong> учасників </p>
-            <p>{% if conference.status %}Заслухано{% else %}Зареєстровано{% endif %}
-                <strong>{{ conference.get_number_of_thesises }}</strong> доповідей </p>
-            {% if conference.thesis_file %}
-                <p><a href="{{ conference.thesis_file.url }}">Завантажити збірку доповідей</a></p>
-            {% endif %}
-        </div>
-
+            <div class="conference_detail">
+                <h4 id="conf-title">{{ conference.title }} / {% if conference.title_eng %}{{ conference.title_eng }}{% endif %}</h4>
+                <h5 style="text-align: center">{{ conference.level|upper }} КОНФЕРЕНЦІЯ</h5>
+                <p><strong>Місце проведення:</strong> {{ conference.place }}</p>
+                <p><strong>Дата проведення:</strong> {{ conference.date_start }} - {{ conference.date_end }}</p>
+                <p>{% if conference.status %}Прийняло участь{% else %}Зареєстровано{% endif %}
+                    <strong>{{ conference.get_number_of_participants }}</strong> {{ participant_message }} </p>
+                <p>{% if conference.status %}Заслухано{% else %}Зареєстровано{% endif %}
+                    <strong>{{ conference.get_number_of_thesises }}</strong> {{ thesis_message }}
+                    <a href="{% url "conference:thesis_list" conference.id conference.slug %}">Переглянути</a>
+                </p>
+                {% if conference.information_message %}
+                    <p><a href="{{ conference.information_message.url }}">Інформаційне повідомлення</a></p>
+                {% endif %}
+                {% if conference.thesis_file %}
+                    <p><a href="{{ conference.thesis_file.url }}">Завантажити збірку доповідей</a></p>
+                {% endif %}
+            </div>
     </div>
 {% endblock content %}

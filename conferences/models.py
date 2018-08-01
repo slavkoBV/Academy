@@ -1,4 +1,5 @@
 import datetime
+import os.path
 
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -19,6 +20,18 @@ section_CHOICES = (
     ('Цивільна безпека', 'Цивільна безпека'),
     ('Транспорт', 'Транспорт'),
 )
+
+
+def get_upload_path(instance, filename):
+    if isinstance(instance, Conference):
+        print(os.path.join(
+                'docs/{0}-{1}/{2}'.format(instance.get_number_of_conference(), instance.slug, filename)))
+        return os.path.join(
+                'docs/{0}-{1}/{2}'.format(instance.get_number_of_conference(), instance.slug, filename))
+    elif isinstance(instance, Thesis):
+        return os.path.join(
+            'theses/{0}-{1}/{2}'.format(instance.conference.get_number_of_conference(), instance.conference.slug,
+                                          filename))
 
 
 class Conference(models.Model):
@@ -60,13 +73,13 @@ class Conference(models.Model):
         verbose_name='Статус конференції (проведена/непроведена)'
     )
     information_message = models.FileField(
-        upload_to='inform_messages/%Y/%m/%d',
+        upload_to=get_upload_path,
         blank=True,
         null=True,
         verbose_name='Інформаційне повідомлення'
     )
     thesis_file = models.FileField(
-        upload_to='thesises/%Y-%m-%d',
+        upload_to=get_upload_path,
         blank=True,
         null=True,
         verbose_name='Збірка доповідей'
@@ -95,7 +108,7 @@ class Conference(models.Model):
     def get_absolute_url(self):
         return reverse('conference:conference_detail', args=[self.id, self.slug])
 
-    def _get_number_of_conference(self):
+    def get_number_of_conference(self):
         try:
             conferences = sorted(list(Conference.objects.all()), key=lambda x: x.date_start)
             return conferences.index(self) + 1
@@ -103,7 +116,7 @@ class Conference(models.Model):
             return None
 
     def __str__(self):
-        return str(self._get_number_of_conference()) + ' ' + str(self.title)
+        return str(self.get_number_of_conference()) + ' ' + str(self.title)
 
 
 # Participant Model ###########################################
@@ -249,7 +262,7 @@ class Thesis(models.Model):
         verbose_name='Назва секції'
     )
     thesis = models.FileField(
-        upload_to='theses/',
+        upload_to=get_upload_path,
         verbose_name='Файл доповіді'
     )
     conference = models.ForeignKey(

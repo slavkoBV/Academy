@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+        <link rel="stylesheet" href="{% static 'css/conf.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+    <div class="container">
+        <ol class="breadcrumb">
+            <li><a href="{% url 'main:main' %}">Головна</a></li>
+            <li><a href="{% url 'conference:conference_list' %}">Конференції</a></li>
+            <li><a href="{% url "conference:conference_detail" conference.id conference.slug %}">
+                {{ conference.title }} : {{ conference.date_start|date:"d b Y"}}</a>
+            </li>
+            <li class="active">Тези</li>
+        </ol>
+            <div class="conference_detail">
+               <div class="conference_detail">
+                    <h4 id="conf-title">{{ conference.title }} / {% if conference.title_eng %}{{ conference.title_eng }}{% endif %}</h4>
+                    <h5 style="text-align: center">{{ conference.level|upper }} КОНФЕРЕНЦІЯ</h5>
+                        <h5 style="text-align: center">Доповіді</h5>
+                        <table class="table table-striped table-hover">
+                               <tbody>
+                               {% for thesis in theses %}
+                                    <tr>
+                                       <td>
+                                           <a href="{{ thesis.thesis.url }}" target="_blank"> <strong>{{ thesis.title }}</strong></a>
+                                           <p>{{ thesis.get_authors }}</p>
+                                       </td>
+                                    </tr>
+                                {% endfor %}
+                               </tbody>
+                        </table>
+
+                </div>
+            </div>
+    </div>
+{% endblock content %}
+
+
+
