@@ -7,7 +7,7 @@ from utils.paginate import paginate
 
 def conference_list(request):
     conferences = Conference.objects.all()
-    context = paginate(conferences, 5, request, {'conferences': conferences}, var_name='conferences')
+    context = paginate(conferences, 1, request, {'conferences': conferences}, var_name='conferences')
     return render(request, 'conference_app/conference_list.html', context)
 
 
@@ -47,6 +47,7 @@ def thesis_list(request, id, slug):
         if form.is_valid():
             if request.GET.get('section') != 'all':
                 theses = theses.filter(section=request.GET.get('section'))
-    context = {'conference': conference, 'theses': theses, 'form': form}
-
+    context = paginate(theses, 5, request, {'theses': theses}, var_name='theses')
+    context['conference'] = conference
+    context['form']= form
     return render(request, 'conference_app/thesis_list.html', context)

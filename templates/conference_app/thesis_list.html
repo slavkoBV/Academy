@@ -11,8 +11,10 @@
         <ol class="breadcrumb">
             <li><a href="{% url 'main:main' %}">Головна</a></li>
             <li><a href="{% url 'conference:conference_list' %}">Конференції</a></li>
-            <li><a href="{% url "conference:conference_detail" conference.id conference.slug %}">
-                {{ conference.title }} : {{ conference.date_start|date:"d b Y"}}</a>
+            <li>
+                <a href="{% url "conference:conference_detail" conference.id conference.slug %}">
+                    {{ conference.title }} : {{ conference.date_start|date:"d b Y"}}
+                </a>
             </li>
             <li class="active">Тези</li>
         </ol>
@@ -21,26 +23,35 @@
                     <h4 id="conf-title">{{ conference.title }}{% if conference.title_eng %} / {{ conference.title_eng }}{% endif %}</h4>
                     <h5 style="text-align: center">{{ conference.level|upper }} КОНФЕРЕНЦІЯ</h5>
                         <h5 style="text-align: center">Доповіді</h5>
-                   <form class="form-inline">
-                        {{ form.as_p }}
-                    </form>
+                        <form class="form-inline">
+                            {{ form.as_p }}
+                        </form>
                         <table class="table table-striped table-hover">
                                <tbody>
                                {% for thesis in theses %}
                                     <tr>
                                        <td>
                                            <a href="{{ thesis.thesis.url }}" target="_blank"> <strong>{{ thesis.title }}</strong></a>
+                                           <p><small>{{ thesis.section }}</small></p>
                                            <p>{{ thesis.get_authors }}</p>
                                        </td>
                                     </tr>
                                 {% endfor %}
                                </tbody>
                         </table>
-
                 </div>
             </div>
     </div>
 {% endblock content %}
+{% block pagination %}
+    {% if is_paginated %}
+        {% with object_list=theses %}
+        <div class="paginator">
+            {% include "pagination.html" %}
+        </div>
+        {% endwith %}
+    {% endif %}
+{% endblock pagination %}
 
 
 

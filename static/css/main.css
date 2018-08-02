@@ -102,20 +102,26 @@ a.menu_link {
 }
 
 main {
-    padding-bottom: 30px;}
+    padding-bottom: 30px;
+    }
 
 .conference_short {
     padding: 10px;
 }
-
+/* Footer style */
+/* paginator style */
+.paginator {
+    text-align: center;
+}
 footer {
-    border-top:1px solid #f1f1f1;
+
     width: 100%;
     position: absolute;
     bottom: 0;
     height: 180px;
 }
 .main-footer {
+    border-top:1px solid #f1f1f1;
     padding-top: 20px;
     height: 100%;
     color: #777;
@@ -134,3 +140,4 @@ footer {
     text-decoration: none;
     color: #46b8da;
 }
+
