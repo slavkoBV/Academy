@@ -18,9 +18,12 @@
         </ol>
             <div class="conference_detail">
                <div class="conference_detail">
-                    <h4 id="conf-title">{{ conference.title }} / {% if conference.title_eng %}{{ conference.title_eng }}{% endif %}</h4>
+                    <h4 id="conf-title">{{ conference.title }}{% if conference.title_eng %} / {{ conference.title_eng }}{% endif %}</h4>
                     <h5 style="text-align: center">{{ conference.level|upper }} КОНФЕРЕНЦІЯ</h5>
                         <h5 style="text-align: center">Доповіді</h5>
+                   <form class="form-inline">
+                        {{ form.as_p }}
+                    </form>
                         <table class="table table-striped table-hover">
                                <tbody>
                                {% for thesis in theses %}

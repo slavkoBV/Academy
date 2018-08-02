@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from .models import Conference
-
+from .forms import ThesisFilterForm
 from utils.paginate import paginate
 
 
@@ -41,9 +41,12 @@ def conference_detail(request, id, slug):
 def thesis_list(request, id, slug):
     conference = get_object_or_404(Conference, pk=id)
     theses = conference.thesis_set.all()
-
+    form = ThesisFilterForm()
     if request.GET.get('section'):
-        theses = theses.filter(section=request.GET.get('section'))
-    context = {'conference': conference, 'theses': theses}
+        form = ThesisFilterForm(request.GET)
+        if form.is_valid():
+            if request.GET.get('section') != 'all':
+                theses = theses.filter(section=request.GET.get('section'))
+    context = {'conference': conference, 'theses': theses, 'form': form}
 
     return render(request, 'conference_app/thesis_list.html', context)
