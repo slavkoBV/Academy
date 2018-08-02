@@ -203,6 +203,7 @@ class UserProfile(models.Model):
     class Meta:
         verbose_name_plural = 'Профілі учасників'
         verbose_name = 'Профіль учасника'
+        ordering = ('lastname', 'firstname')
         unique_together = ('lastname', 'firstname', 'middlename')
 
     def __str__(self):
@@ -281,6 +282,7 @@ class Thesis(models.Model):
     class Meta:
         verbose_name_plural = 'Доповіді'
         verbose_name = 'Доповідь'
+        ordering = ('title', 'section')
         unique_together = (('title', 'conference'),)
 
     def __str__(self):

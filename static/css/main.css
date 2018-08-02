@@ -140,4 +140,18 @@ footer {
     text-decoration: none;
     color: #46b8da;
 }
-
+select {
+    width: 290px;
+    height: 2em;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    background-color: white;
+    font-size: 1.05em;
+}
+/* NEWS STYLE */
+.news {
+    margin: 0 10px;
+}
+.news_content {
+    padding-top: 10px;
+}

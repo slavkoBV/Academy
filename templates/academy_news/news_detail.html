@@ -9,6 +9,12 @@
           <li><a href="{% url 'news:news' %}">Новини</a></li>
           <li class="active">{{ object.title }}</li>
         </ol>
-        {{ object.content|safe }}
+        <div class="news">
+            <h3>{{ object.title }}</h3>
+            <small><strong>{{ object.date_created }}</strong></small>
+            <article class="news_content">
+                {{ object.content|safe }}
+            </article>
+        </div>
     </div>
 {% endblock content %}

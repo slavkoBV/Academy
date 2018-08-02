@@ -5,7 +5,7 @@ from .models import Contact
 
 
 def main(request):
-    news = News.objects.all()[:3]
+    news = News.objects.all()[:2]
     return render(request, 'main/main.html', {'news': news})
 
 

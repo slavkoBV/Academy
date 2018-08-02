@@ -21,7 +21,7 @@
         {% for n in news %}
             <h4>{{ n.title }}</h4>
             <h6>{{ n.date_created }}</h6>
-            <p>{{ n.content|safe }}</p>
+            <p>{{ n.annotation|safe }}</p>
         {% endfor %}
     </div>
 {% endblock content %}
