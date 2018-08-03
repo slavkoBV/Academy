@@ -4,14 +4,16 @@
 
 {% block content %}
     <div class="container">
+        <div class="news">
     {% for n in news %}
 
         <h4>{{ n.date_created }} - {{ n.title }}</h4>
-        {{ n.annotation|safe }}
-        <p><a href="{{ n.get_absolute_url }}">Читати далі...</a></p>
+            <p>{{ n.annotation|safe }}</p>
+            <p><a href="{{ n.get_absolute_url }}">Читати далі...</a></p>
     {% empty %}
         <p>Новин немає.</p>
     {% endfor %}
+        </div>
     </div>
 {% endblock content %}
 {% block pagination %}
