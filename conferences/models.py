@@ -25,13 +25,13 @@ section_CHOICES = (
 def get_upload_path(instance, filename):
     if isinstance(instance, Conference):
         print(os.path.join(
-                'docs/{0}-{1}/{2}'.format(instance.get_number_of_conference(), instance.slug, filename)))
+            'docs/{0}-{1}/{2}'.format(instance.get_number_of_conference(), instance.slug, filename)))
         return os.path.join(
-                'docs/{0}-{1}/{2}'.format(instance.get_number_of_conference(), instance.slug, filename))
+            'docs/{0}-{1}/{2}'.format(instance.get_number_of_conference(), instance.slug, filename))
     elif isinstance(instance, Thesis):
         return os.path.join(
             'theses/{0}-{1}/{2}'.format(instance.conference.get_number_of_conference(), instance.conference.slug,
-                                          filename))
+                                        filename))
 
 
 class Conference(models.Model):
@@ -87,13 +87,11 @@ class Conference(models.Model):
 
     def get_number_of_participants(self):
         participants = self.participant_set.all()
-        return ''.join(str(len(participants)))
-
-    get_number_of_participants.short_description = 'Кількість учасників'
+        return str(len(participants))
 
     def get_number_of_thesises(self):
         thesises = self.thesis_set.all()
-        return ''.join(str(len(thesises)))
+        return str(len(thesises))
 
     class Meta:
         verbose_name = 'Конференція'
@@ -197,8 +195,6 @@ class UserProfile(models.Model):
     def get_number_of_conferences(self):
         conferences = [participant.conference for participant in self.participant_set.all()]
         return str(len(conferences))
-
-    get_number_of_conferences.short_description = 'Кількість конференцій'
 
     class Meta:
         verbose_name_plural = 'Профілі учасників'

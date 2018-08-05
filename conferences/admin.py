@@ -1,14 +1,26 @@
 from django.contrib import admin
 from django import forms
+from django.db import models
 from django.forms import ModelForm, BaseInlineFormSet
 from .models import Conference, UserProfile, Thesis, Author, Participant, Section, section_CHOICES
 
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ['lastname', 'firstname', 'country', 'city', 'get_number_of_conferences']
+    list_display = ['lastname', 'firstname', 'country', 'city', 'number_of_conferences']
     list_filter = ['degree', 'academic_status', 'country', 'city']
     readonly_fields = ['conferences']
+
+    def get_queryset(self, request):
+        qs = super(UserProfileAdmin, self).get_queryset(request)
+        qs = qs.annotate(models.Count('participant'))
+        return qs
+
+    def number_of_conferences(self, obj):
+        return obj.participant__count
+
+    number_of_conferences.admin_order_field = 'participant__count'
+    number_of_conferences.short_description = 'Кількість конференцій'
 
 
 class ParticipantInline(admin.StackedInline):
@@ -19,7 +31,7 @@ class ParticipantInline(admin.StackedInline):
 
 @admin.register(Conference)
 class ConferenceAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'title_eng', 'level', 'date_start', 'status', 'get_number_of_participants']
+    list_display = ['__str__', 'title_eng', 'level', 'date_start', 'status', 'number_of_participants']
     list_filter = ['status', 'date_start']
     inlines = (ParticipantInline,)
     suit_form_tabs = (('general', 'Конференція'), ('participants', 'Учасники'))
@@ -30,6 +42,17 @@ class ConferenceAdmin(admin.ModelAdmin):
                        'information_message', 'thesis_file']
         })
     ]
+
+    def get_queryset(self, request):
+        qs = super(ConferenceAdmin, self).get_queryset(request)
+        qs = qs.annotate(models.Count('participant'))
+        return qs
+
+    def number_of_participants(self, obj):
+        return obj.participant__count
+
+    number_of_participants.admin_order_field = 'participant__count'
+    number_of_participants.short_description = 'Кількість учасників'
 
 
 class AuthorFormSet(BaseInlineFormSet):
