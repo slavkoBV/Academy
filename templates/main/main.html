@@ -17,11 +17,15 @@
 
         </div>
     </div>
-    <div class="container news">
+    <div class="container">
+        <h4 style="text-align:center; color: #265">ОСТАННІ НОВИНИ</h4>
+        <div class="news">
         {% for n in news %}
             <h4>{{ n.title }}</h4>
             <h6>{{ n.date_created }}</h6>
             <p>{{ n.annotation|safe }}</p>
+            <p><a href="{% url "news:news_detail" n.id n.slug %}">Читати далі...</a> </p>
         {% endfor %}
+        </div>
     </div>
 {% endblock content %}

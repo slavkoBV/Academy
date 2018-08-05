@@ -13,7 +13,7 @@ class News(models.Model):
         blank=True,
         editable=False
     )
-    annotation = models.CharField(
+    annotation = models.TextField(
         max_length=300,
         help_text='Макс. 300 символів',
         blank=False,
