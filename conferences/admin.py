@@ -39,7 +39,7 @@ class ConferenceAdmin(admin.ModelAdmin):
         (None, {
             'classes': ('suit-tab', 'suit-tab-general',),
             'fields': ['title', 'title_eng', 'level', 'date_start', 'date_end', 'place', 'status',
-                       'information_message', 'thesis_file']
+                       'information_message', 'thesises_file']
         })
     ]
 

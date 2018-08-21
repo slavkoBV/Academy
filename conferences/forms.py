@@ -21,5 +21,5 @@ class ThesisFilterForm(forms.Form):
         label='Секція',
         choices=section_CHOICES,
         required=False,
-        widget=forms.Select(attrs={'onchange': 'this.form.submit();'})
+        #widget=forms.Select(attrs={'onchange': 'this.form.submit();'})
     )

@@ -78,7 +78,7 @@ class Conference(models.Model):
         null=True,
         verbose_name='Інформаційне повідомлення'
     )
-    thesis_file = models.FileField(
+    thesises_file = models.FileField(
         upload_to=get_upload_path,
         blank=True,
         null=True,
