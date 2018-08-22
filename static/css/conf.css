@@ -1,6 +1,28 @@
 #conf-title {
-    color: black;
-    background-color: lightblue;
+    color: white;
+    background-color: rgba(5,15,150, 0.55);
     line-height: 1.5em;
     padding: 5px;
+}
+.search_results {
+    margin: 10px 0 10px 0;
+    padding: 10px;
+    background-color: #dff0d8;
+    border-radius: 5px;
+    line-height: 1.5em;
+    border: 1px solid #d6e9c6;
+    color: #3c763d;
+}
+#search {width: 300px;}
+#id_section {width: 290px;}
+
+@media only screen  and (max-width: 990px) {
+    #search {
+        width: 270px;
+        display: inline;
+    }
+    .search {
+        margin-bottom: 20px;
+    }
+    #id_section {width: 290px;}
 }

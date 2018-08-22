@@ -33,22 +33,24 @@
                         <h5 style="text-align: center">Доповіді</h5>
 
                         <div class="row">
-                            <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="col-xs-12 col-sm-12 col-md-6">
                                 <form class="form-inline search" action="{% url "conference:thesis_list" conference.id conference.slug %}" method="get">
                                     {{ search_form.q }}
                                     <input type="submit" class="btn btn-primary search-btn" value="Пошук">
                                 </form>
                             </div>
-                            <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="col-xs-12 col-sm-12 col-md-6">
                                 <form class="form-inline">
                                     {{ form.as_p }}
                                 </form>
 				            </div>
        	                </div>
                         <div class="row">
-                            {% if q %}
-                                <p>За Вашим запитом <strong>"{{ q }}"</strong> знайдено <strong>{{ theses|length }}</strong> {{ thesis_message }}</p>
-                            {% endif %}
+                            <div class="col-xs-12">
+                                {% if q %}
+                                    <p class="search_results">За Вашим запитом <strong>"{{ q }}"</strong> знайдено <strong>{{ number_of_search_results }}</strong> {{ thesis_message }}</p>
+                                {% endif %}
+                            </div>
                         </div>
 
                         <table class="table table-striped table-hover">

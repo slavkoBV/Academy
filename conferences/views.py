@@ -52,22 +52,25 @@ def thesis_list(request, id, slug):
         search_params = ('title', 'author__participant__user__lastname')
         theses = search_objects(q, theses, search_params, sort_param)
 
-        number_of_search_result = len(theses)
-        if number_of_search_result == 2 and str(number_of_search_result).startswith('1'):
-            thesis_message = 'доповідей'
-        else:
-            for i in thesis_message_dict.keys():
-                if str(number_of_search_result)[-1] in i:
-                    thesis_message = thesis_message_dict[i]
+
     if request.GET.get('section'):
         form = ThesisFilterForm(request.GET)
         if form.is_valid():
             if request.GET.get('section') != 'all':
                 theses = theses.filter(section=request.GET.get('section'))
-    context = paginate(theses, 3, request, {'theses': theses}, var_name='theses')
+    number_of_search_result = str(len(theses))
+
+    if len(number_of_search_result) == 2 and number_of_search_result.startswith('1'):
+        thesis_message = 'доповідей'
+    else:
+        for i in thesis_message_dict.keys():
+            if number_of_search_result[-1] in i:
+                thesis_message = thesis_message_dict[i]
+    context = paginate(theses, 4, request, {'theses': theses}, var_name='theses')
     context['conference'] = conference
     context['form'] = form
     context['search_form'] = search_form
     context['q'] = q
+    context['number_of_search_results'] = number_of_search_result
     context['thesis_message'] = thesis_message
     return render(request, 'conference_app/thesis_list.html', context)

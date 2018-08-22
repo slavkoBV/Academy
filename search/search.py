@@ -54,4 +54,4 @@ def prepare_words(search_text):
         if common in search_text:
             search_text = search_text.replace(common, ' ')
     words = search_text.split()
-    return words[0:4]
+    return words[0:5]
