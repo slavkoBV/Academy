@@ -12,7 +12,8 @@ def store(request, q):
     if len(q) > 2:
         if q not in request.session['q']:
             request.session['q'].append(q)
-            term = SearchItem()
+            request.session.modified = True  # To object append to the session list, it must be explicitly
+            term = SearchItem()  # set modified flag
             term.q = q
             x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
             if x_forwarded_for:

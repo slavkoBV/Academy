@@ -8,7 +8,8 @@ from .models import Conference, UserProfile, Thesis, Author, Participant, Sectio
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ['lastname', 'firstname', 'country', 'city', 'number_of_conferences']
-    list_filter = ['degree', 'academic_status', 'country', 'city']
+    list_filter = ['lastname','degree', 'academic_status', 'country', 'city']
+    search_fields = ['lastname']
     readonly_fields = ['conferences']
 
     def get_queryset(self, request):
@@ -23,22 +24,13 @@ class UserProfileAdmin(admin.ModelAdmin):
     number_of_conferences.short_description = 'Кількість конференцій'
 
 
-class ParticipantInline(admin.StackedInline):
-    model = Participant
-    extra = 0
-    suit_classes = 'suit-tab suit-tab-participants'
-
-
 @admin.register(Conference)
 class ConferenceAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'title_eng', 'level', 'date_start', 'status', 'number_of_participants']
+    list_display = ['__str__', 'order', 'title_eng', 'level', 'date_start', 'status', 'number_of_participants']
     list_filter = ['status', 'date_start']
-    inlines = (ParticipantInline,)
-    suit_form_tabs = (('general', 'Конференція'), ('participants', 'Учасники'))
     fieldsets = [
         (None, {
-            'classes': ('suit-tab', 'suit-tab-general',),
-            'fields': ['title', 'title_eng', 'level', 'date_start', 'date_end', 'place', 'status',
+            'fields': ['title', 'order', 'title_eng', 'level', 'date_start', 'date_end', 'place', 'status',
                        'information_message', 'thesises_file']
         })
     ]
@@ -97,15 +89,14 @@ class AuthorInline(admin.StackedInline):
     formset = AuthorFormSet
     form = AuthorForm
 
+conf_list = [(str(conf.id), str(conf.__str__())) for conf in Conference.objects.all()]
 
 class ConferenceFilter(admin.SimpleListFilter):
     title = 'Конференція'
     parameter_name = 'conferences'
 
     def lookups(self, request, model_admin):
-        conf_list = []
-        for conf in Conference.objects.all():
-            conf_list.append((str(conf.id), str(conf.__str__())))
+
         return conf_list
 
     def queryset(self, request, queryset):
@@ -148,5 +139,6 @@ class SectionInline(admin.StackedInline):
 @admin.register(Participant)
 class ParticipantAdmin(admin.ModelAdmin):
     list_display = ('user', 'conference', 'get_sections')
-    list_filter = (ConferenceFilter, SectionFilter)
+    list_max_show_all = 500
+    list_filter = (ConferenceFilter, SectionFilter,)
     inlines = [SectionInline, ]

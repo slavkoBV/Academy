@@ -4,19 +4,19 @@ function selectInit() {
         var select = document.getElementById('id_section');
 	    var select_value = select.options[select.selectedIndex].value;
         $(this).submit();
-		var HOST = window.location.href;
+		var url = window.location.toString();
 		var re = /[\?\&]section=([\w+\%]+)/;
 
-		if (HOST.indexOf('?section') || HOST.indexOf('&section')) {
-			HOST = HOST.replace(re, "");
+		if (url.indexOf('section')) {
+			url = url.replace(re, "");
 		}
-        var newURL = HOST;
-		if ((HOST.indexOf("q") > -1) || (HOST.indexOf("page")) > -1){
-			newURL = HOST + "&section=" + select_value;
-		} else {
-			newURL = HOST + "?section=" + select_value;
+		if ((url.indexOf("q") > -1) || (url.indexOf("page") > -1)){
+		    url = url + "&section=" + select_value;
+        }
+		else {
+			url = url + "?section=" + select_value;
 		}
-		window.location.assign(newURL);
+		window.location.assign(url);
 	});
 }
 

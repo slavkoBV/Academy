@@ -2,6 +2,7 @@ import datetime
 import os.path
 
 from django.db import models
+from django.db.models import Max
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 
@@ -47,6 +48,9 @@ class Conference(models.Model):
         blank=True,
         verbose_name='Тема конференції_англ.'
     )
+    order = models.PositiveSmallIntegerField(blank=True,
+                                             null=True,
+                                             verbose_name='Порядковий номер')
     slug = models.SlugField(blank=True, editable=False)
     level = models.CharField(
         max_length=70,
@@ -86,35 +90,36 @@ class Conference(models.Model):
     )
 
     def get_number_of_participants(self):
-        participants = self.participant_set.all()
-        return str(len(participants))
+        return self.participant_set.count()
 
     def get_number_of_thesises(self):
-        thesises = self.thesis_set.all()
-        return str(len(thesises))
+        return self.thesis_set.count()
 
     class Meta:
         verbose_name = 'Конференція'
         verbose_name_plural = 'Конференції'
         ordering = ('-date_start',)
 
-    def save(self, *args, **kwargs):
-        if self.title:
-            self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
-
     def get_absolute_url(self):
         return reverse('conference:conference_detail', args=[self.id, self.slug])
 
-    def get_number_of_conference(self):
-        try:
-            conferences = sorted(list(Conference.objects.all()), key=lambda x: x.date_start)
-            return conferences.index(self) + 1
-        except ValueError:
-            return None
+    def save(self, *args, **kwargs):
+        if self.title:
+            self.slug = slugify(self.title)
+        if not self.order:
+            last = Conference.objects.all().aggregate(Max('order')).get('order__max')
+            print(last)
+            if last:
+                self.order = last + 1
+            else:
+                self.order =  1
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.get_number_of_conference()) + ' ' + str(self.title)
+        if self.order:
+            return str(self.order) + ' ' + str(self.title)
+        else:
+            return self.title
 
 
 # Participant Model ###########################################

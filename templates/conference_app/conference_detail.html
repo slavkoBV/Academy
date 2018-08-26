@@ -5,7 +5,7 @@
 {% block extra_css %}
         <link rel="stylesheet" href="{% static 'css/conf.css' %}">
 {% endblock extra_css %}
-
+{% block title %} - {{ conference.get_number_of_conference }} {{conference.title }}{% endblock title %}
 {% block content %}
     <div class="container">
         <ol class="breadcrumb">
