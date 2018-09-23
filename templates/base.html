@@ -8,6 +8,7 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<title>Академія технічних наук{% block title %}{% endblock title %}</title>
+    <link rel="shortcut icon" href="{% static "img/favicon.png" %}" type="image/png" />
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans&amp;subset=cyrillic" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
@@ -37,10 +38,6 @@
 			    <div class="collapse navbar-collapse" id="menu-collapse">
                     <ul class="nav navbar-nav">
                     {% url 'main:main' as index %}
-                        <li {% if request.path == index %}class="active menu_item menu_item--current"{% else %}
-                            class="menu_item"{% endif %}>
-                            <a class="menu_link" href="{% url "main:main" %}">Головна<span class="sr-only">(current)</span></a>
-                        </li>
                         <li {% if  'news' in request.path %}class="active menu_item menu_item--current"{% else %}
                             class="menu_item"{% endif %}>
                             <a class="menu_link" href="{% url 'news:news' %}">Новини</a>
@@ -51,6 +48,10 @@
                         </li>
                         <li class="menu_item">
                             <a class="menu_link" href="#">Монографії</a>
+                        </li>
+                        <li {% if  'projects' in request.path %}class="active menu_item menu_item--current"{% else %}
+                            class="menu_item"{% endif %}>
+                            <a class="menu_link" href="{% url 'projects:projects' %}">Проекти</a>
                         </li>
                         <li {% if 'contacts' in request.path %}class="active menu_item menu_item--current"{% else %}
                             class="menu_item"{% endif %}>
@@ -74,7 +75,7 @@
 				<div class="main-footer">
 					<div class="container">
 						<div class="col-xs-12 col-sm-12 col-md-12 copyright">
-							<p>&copy; 2018 Академія технічних наук</p>
+							<p>&copy; 2018 Академія технічних наук України</p>
 						</div>
 					</div>
 				</div>

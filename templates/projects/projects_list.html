@@ -5,21 +5,21 @@
 {% block content %}
     <div class="container">
         <div class="news">
-    {% for n in news %}
+    {% for p in projects %}
 
-        <h4>{{ n.title }}</h4>
-        <h4><small>{{ n.date_created }}</small></h4>
-            <p>{{ n.annotation|safe }}</p>
-            <p><a href="{{ n.get_absolute_url }}">Читати далі...</a></p>
+        <h4>{{ p.title }}</h4>
+        <h4><small>{{ p.date_created }}</small></h4>
+            <p>{{ p.annotation|safe }}</p>
+            <p><a href="{{ p.get_absolute_url }}">Читати далі...</a></p>
     {% empty %}
-        <p>Новин немає.</p>
+        <p>Наразі проектів немає.</p>
     {% endfor %}
         </div>
     </div>
 {% endblock content %}
 {% block pagination %}
     {% if is_paginated %}
-        {% with object_list=news %}
+        {% with object_list=projects %}
         <div class="paginator">
             {% include "pagination.html" %}
         </div>

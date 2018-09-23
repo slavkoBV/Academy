@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'academy_news',
     'conferences',
     'search',
+    'projects',
 ]
 
 MIDDLEWARE = [
