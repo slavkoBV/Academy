@@ -1,0 +1,27 @@
+#links {
+    margin-top: 10px;
+    text-align: center;
+}
+#links li {
+    display: inline-block;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+#links li a {
+    padding: 5px 10px;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-transform: uppercase;
+    background-color: white;
+    color: black !important;
+    text-decoration: none;
+}
+#links li a:hover {
+    background-color: rgb(110,138,195);
+    color: white !important;
+}
+#ajax_block #newsItem {
+    margin-top: 10px;
+    padding: 20px;
+    border: 1px solid white;
+}

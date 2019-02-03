@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^ckeditor/', include('ckeditor_uploader.urls')),
     url(r'^conference/', include('conferences.urls', namespace='conference')),
     url(r'^news/', include('academy_news.urls', namespace='news')),
-    url(r'^projects/', include('projects.urls', namespace='projects')),
+    url(r'^robosprint/', include('robosprint.urls', namespace='robosprint')),
     url(r'^', include('main_app.urls', namespace='main')),
 ]
 

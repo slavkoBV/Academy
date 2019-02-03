@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load modify_query %}
 
 {% block content %}
     <div class="container">
@@ -11,9 +12,18 @@
         <h4><small>{{ n.date_created }}</small></h4>
             <p>{{ n.annotation|safe }}</p>
             <p><a href="{{ n.get_absolute_url }}">Читати далі...</a></p>
+        <hr>
     {% empty %}
         <p>Новин немає.</p>
     {% endfor %}
+        </div>
+        <div class="tags">
+            <h4>Теги</h4>
+            {% for tag in tags %}
+                <a href="{% modify_query "page" tag=tag %}">
+                    <p>{{ tag }}</p>
+                </a>
+            {% endfor %}
         </div>
     </div>
 {% endblock content %}

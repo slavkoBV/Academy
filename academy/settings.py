@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'conferences',
     'search',
     'projects',
+    'robosprint'
 ]
 
 MIDDLEWARE = [

@@ -91,11 +91,10 @@ h1, h2, h3, h4, h5 , h6 {
 	transition: transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .menu_link::before {
-	background: red;
+	background: rgba(5, 15, 150, 0.55);
 	-webkit-transition-delay: 0.4s;
 	transition-delay: 0.4s;
 }
-.menu_link::after {background: red;}
 a.menu_link {
     font-size: 15px;
     text-transform: uppercase;
@@ -105,6 +104,12 @@ main {
     padding-bottom: 30px;
     }
 
+.jumbotron {
+    background: url('/static/img/jumbo.png') no-repeat center center;
+    background-size: contain;
+    box-shadow: inset 0 0 0 1000px rgba(5, 15, 150, 0.55);
+    color: white;
+}
 .conference_short {
     padding: 10px;
 }
@@ -155,4 +160,9 @@ select {
 }
 .news_content {
     padding-top: 10px;
+}
+@media only screen and (max-width: 800px) {
+    .jumbotron {
+        background-size: cover;
+    }
 }

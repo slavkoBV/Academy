@@ -8,7 +8,7 @@ from .models import Conference, UserProfile, Thesis, Author, Participant, Sectio
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ['lastname', 'firstname', 'country', 'city', 'number_of_conferences']
-    list_filter = ['lastname','degree', 'academic_status', 'country', 'city']
+    list_filter = ['lastname', 'degree', 'academic_status', 'country', 'city']
     search_fields = ['lastname']
     readonly_fields = ['conferences']
 
@@ -90,6 +90,7 @@ class AuthorInline(admin.StackedInline):
     form = AuthorForm
 
 conf_list = [(str(conf.id), str(conf.__str__())) for conf in Conference.objects.all()]
+
 
 class ConferenceFilter(admin.SimpleListFilter):
     title = 'Конференція'

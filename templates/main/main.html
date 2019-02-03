@@ -2,8 +2,8 @@
 
 {% load static %}
 
-{% block content %}
 
+{% block jumbo %}
     <div class="jumbotron">
         <div class="container">
           <h2>Академія технічних наук України (АТНУ)</h2>
@@ -14,9 +14,13 @@
                     Мета діяльності – цілеспрямований розвиток технічних наук, захист фахових інтересів,
                     координація науково-дослідної роботи, обмін досвідом.
             </article>
-
         </div>
     </div>
+{% endblock jumbo %}
+
+{% block content %}
+
+
     <div class="container">
         <h4 style="text-align:center; color: #265">ОСТАННІ НОВИНИ</h4>
         <div class="news">
@@ -25,6 +29,7 @@
             <h6>{{ n.date_created }}</h6>
             <p>{{ n.annotation|safe }}</p>
             <p><a href="{% url "news:news_detail" n.id n.slug %}">Читати далі...</a> </p>
+            <hr>
         {% endfor %}
         </div>
     </div>

@@ -13,6 +13,11 @@ class News(models.Model):
         blank=True,
         editable=False
     )
+    tags = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name='Теги'
+    )
     annotation = models.TextField(
         max_length=300,
         help_text='Макс. 300 символів',
