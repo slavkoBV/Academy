@@ -51,15 +51,15 @@
                             class="menu_item"{% endif %}>
                             <a class="menu_link" href="{% url "main:main" %}">Головна<span class="sr-only">(current)</span></a>
                         </li>
-                        <li {% if  'news' in request.path %}class="active menu_item menu_item--current"{% else %}
+                        <li {% if  'news/' in request.path %}class="active menu_item menu_item--current"{% else %}
                             class="menu_item"{% endif %}>
                             <a class="menu_link" href="{% url 'news:news' %}">Новини</a>
                         </li>
-                        <li {% if  'conference' in request.path %}class="active menu_item menu_item--current"{% else %}
+                        <li {% if  'conference/' in request.path %}class="active menu_item menu_item--current"{% else %}
                             class="menu_item"{% endif %}>
                             <a class="menu_link" href="{% url 'conference:conference_list' %}">Конференції</a>
                         </li>
-						<li {% if  'robosprint' in request.path %}class="active menu_item menu_item--current"{% else %}
+						<li {% if  'robosprint/' in request.path %}class="active menu_item menu_item--current"{% else %}
                             class="menu_item"{% endif %}>
                             <a class="menu_link" href="{% url 'robosprint:main' %}">RoboSprint</a>
                         </li>

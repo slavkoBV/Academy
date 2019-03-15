@@ -10,6 +10,10 @@ thesis_message_dict = {('1',): 'доповідь',
                        ('2', '3', '4'): 'доповіді',
                        ('0', '5', '6', '7', '8', '9'): 'доповідей'}
 
+participant_message_dict = {('1',): 'учасник',
+                            ('2', '3', '4'): 'учасники',
+                            ('0', '5', '6', '7', '8', '9'): 'учасників'}
+
 
 def conference_list(request):
     conferences = Conference.objects.all()
@@ -18,9 +22,6 @@ def conference_list(request):
 
 
 def conference_detail(request, id, slug):
-    participant_message_dict = {('1',): 'учасник',
-                                ('2', '3', '4'): 'учасники',
-                                ('0', '5', '6', '7', '8', '9'): 'учасників'}
     conference = get_object_or_404(Conference, pk=id)
     thesis_message = ''
     participant_message = ''

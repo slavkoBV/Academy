@@ -42,11 +42,18 @@ def search_objects(search_text, object_list, search_params, sort_param):
     words = prepare_words(search_text)
     results = object_list.model.objects.none()  # create empty queryset to chain results of search
     for word in words:
-        results = results | object_list.filter(Q(**{'{}__icontains'.format(search_params[0]): word}) |
-                                               Q(**{'{}__icontains'.format(search_params[1]): word}))
+        results = results | object_list.filter(eval(get_filter_condition(search_params, word)))
     if sort_param:
         return results.distinct().order_by(sort_param)
     return results.distinct()
+
+
+def get_filter_condition(params, word):
+    conditions = []
+    for p in params:
+        conditions.append("Q({p}__icontains='{word}'".format(p=p, word=word) + ")")
+    conditions = ' | '.join(conditions) if len(params) > 1 else next(conditions)
+    return conditions
 
 
 def prepare_words(search_text):
