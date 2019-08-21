@@ -51,8 +51,8 @@ def search_objects(search_text, object_list, search_params, sort_param):
 def get_filter_condition(params, word):
     conditions = []
     for p in params:
-        conditions.append("Q({p}__icontains='{word}'".format(p=p, word=word) + ")")
-    conditions = ' | '.join(conditions) if len(params) > 1 else next(conditions)
+        conditions.append("Q({p}__icontains='{word}')".format(p=p, word=word))
+    conditions = ' | '.join(conditions) if len(params) > 1 else next(iter(conditions))
     return conditions
 
 
